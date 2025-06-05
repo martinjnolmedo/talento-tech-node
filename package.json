@@ -1,0 +1,12 @@
+{
+  "name": "pre-entrega",
+  "version": "1.0.0",
+  "description": "Pre entrega de proyecto API Rest",
+  "license": "MIT",
+  "author": "Martin Olmedo",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node start.js"
+  }
+}
