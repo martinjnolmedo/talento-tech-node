@@ -1,76 +1,21 @@
 import fetch from 'node-fetch';
+import { fileURLToPath } from "node:url";
+import { dirname } from "node:path";
+import fs from "node:fs"; //para leer archivos
+import path from "node:path";
+import { argv } from "node:process";
+import buendia from "./products";
 
-const [, , method, endpoint, ...args] = process.argv;
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const BASE_URL = 'https://fakestoreapi.com';
 
-function showUsage() {
-    console.log(`\nUso correcto:
-
-npm run start GET products
-npm run start GET products/<productId>
-npm run start POST products <title> <price> <category>
-npm run start DELETE products/<productId>\n`);
+if (argv[2].toLocaleLowerCase() == "GET".toLocaleLowerCase()) {
+    console.log("Toma un dato");
+} else if (argv[2].toLocaleLowerCase() == "POST".toLocaleLowerCase()) {
+    console.log(`Recibimos ${argv[3]} satisfactoriamente.`);
+} else if (argv[2].toLocaleLowerCase() == "PUT".toLocaleLowerCase()) {
+    console.log(`Modificamos el item con id: ${argv[3]} satisfactoriamente.`);
+} else if (argv[2].toLocaleLowerCase() == "DELETE".toLocaleLowerCase()) {
+    console.log(`El item con el id: ${argv[3]} se eliminó con éxito.`);
 }
-
-async function handleRequest() {
-    if (!method || !endpoint) {
-        showUsage();
-        return;
-    }
-
-    const [resource, id] = endpoint.split('/');
-    const url = `${BASE_URL}/${resource}${id ? `/${id}` : ''}`;
-
-    switch (method.toUpperCase()) {
-        case 'GET': {
-            try {
-                const res = await fetch(url);
-                const data = await res.json();
-                console.log(data);
-            } catch (err) {
-                console.error('Error al obtener datos:', err);
-            }
-            break;
-        }
-        case 'POST': {
-            const [title, price, category] = args;
-            if (!title || !price || !category) {
-                console.log('Faltan argumentos. Uso: npm run start POST products <title> <price> <category>');
-                return;
-            }
-            try {
-                const body = { title, price: parseFloat(price), category };
-                const res = await fetch(`${BASE_URL}/${resource}`, {
-                    method: 'POST',
-                    body: JSON.stringify(body),
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const data = await res.json();
-                console.log('Producto creado:', data);
-            } catch (err) {
-                console.error('Error al crear producto:', err);
-            }
-            break;
-        }
-        case 'DELETE': {
-            if (!id) {
-                console.log('Falta el ID del producto. Uso: npm run start DELETE products/<productId>');
-                return;
-            }
-            try {
-                const res = await fetch(url, { method: 'DELETE' });
-                const data = await res.json();
-                console.log('Producto eliminado:', data);
-            } catch (err) {
-                console.error('Error al eliminar producto:', err);
-            }
-            break;
-        }
-        default:
-            console.log('Método no soportado. Usa GET, POST o DELETE.');
-            showUsage();
-    }
-}
-
-handleRequest();
