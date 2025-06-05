@@ -8,22 +8,32 @@ import buendia from "./products";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const BASE_URL = 'https://fakestoreapi.com';
-
-fetch('https://fakestoreapi.com/products/1')
-    .then((response) => response.json())
-    .then((json) => console.log(json));
 
 async function main() {
     if (argv.length > 1) {
-        if (argv[2] == "GET") {
-            console.log("Toma un dato");
+        if (argv[2] == "GET" && argv[3] > "0") {
+            let id = argv[3];
+            fetch(`https://fakestoreapi.com/products/${id}`)
+                .then((response) => response.json())
+                .then((data) => console.log(data))
+                .catch((error) => console.error(error))
+                .finally(() => console.log("END"));
+            console.log(`Seleccionaste el producto ${argv[3]}: ${id} `);
+        } else if (argv[2] == "GET" && argv[3] == null) {
+            fetch(`https://fakestoreapi.com/products/`)
+                .then((response) => response.json())
+                .then((data) => console.log(data))
+                .catch((error) => console.error(error))
+                .finally(() => console.log("END"));
         } else if (argv[2] == "POST") {
-            console.log(`Recibimos ${argv[3]} satisfactoriamente.`);
+            let id = argv[3].toString();
+            console.log(`Recibimos ${id} satisfactoriamente.`);
         } else if (argv[2] == "PUT") {
-            console.log(`Modificamos el item con id: ${argv[3]} satisfactoriamente.`);
+            let id = argv[3].toString();
+            console.log(`Modificamos el item con id: ${id} satisfactoriamente.`);
         } else if (argv[2] == "DELETE") {
-            console.log(`El item con el id: ${argv[3]} se eliminó con éxito.`);
+            let id = argv[3].toString();
+            console.log(`El item con el id: ${id} se eliminó con éxito.`);
         }
     } else {
         console.log("Error.")
@@ -31,3 +41,4 @@ async function main() {
 }
 
 main();
+
